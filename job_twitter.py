@@ -1,13 +1,32 @@
+# -*- coding: utf-8 -*-
+
 from tweepy.streaming import StreamListener
 import json
 import time
-import datetime
+# import datetime
 from tweepy import OAuthHandler
 from tweepy import Stream
 from header import consumer_key, consumer_secret, access_token, access_token_secret
 
 
 from models import db, Tweet
+
+
+cross_reference = ['tren',
+                   'otobüs',
+                   'minibus',
+                   'tramvay',
+                   'vapur',
+                   'dolmuş',
+                   'araba',
+                   'taxi'
+                   'bayan-yanı',
+                   'metro',
+                   'bus',
+                   'tramway',
+                   'ferry',
+                   'train',
+                   'car']
 
 
 def fix_unicode(text):
@@ -45,17 +64,23 @@ class StdOutListener(StreamListener):
         json_data = json.loads(data)
 
         text = json_data.get('text', None)
+        try:
+            hashtags = json_data.get('entities', None).get('hashtags', None)[0].get('text')
+        except Exception as e:
+            print e
+        hashtags = fix_text(hashtags)
         text = fix_text(text)
         screen_name = json_data.get('user',  None).get('screen_name', None)
         screen_name = fix_text(screen_name)
         urls = [i['display_url'] for i in json_data.get('entities', None).get('urls', None)]
         urls = fix_lists(urls)
-        timestamp = str(datetime.datetime.now())
+        # timestamp = str(datetime.datetime.now())
 
-        print "*"*40
-        print "Screen Name: {}".format(screen_name)
-        print "Text: {}".format(text)
-        print "URLs: {}".format(urls)
+        # print "*"*40
+        # print "Screen Name: {}".format(screen_name)
+        # print "Text: {}".format(text)
+        # print "URLs: {}".format(urls)
+
         # try:
         #     tweet = Tweet(screen_name=screen_name, text=text, timestamp=timestamp)
         #     db.session.add(tweet)
@@ -64,6 +89,17 @@ class StdOutListener(StreamListener):
         # except Exception as e:
         #     import traceback; traceback.print_exc();
         # print "Yikes there was an error %s" % e
+        for i in cross_reference:
+            if i in text:
+                print '*' * 30
+                print "YES IT WORKED WOWOOWOWO"
+                print i
+                print "Text: {}".format(text)
+                print "URLs: {}".format(urls)
+                print '*' * 30
+                break
+
+        # text = fix_text(text)
 
     def on_error(self, status):
         error_counter = 0

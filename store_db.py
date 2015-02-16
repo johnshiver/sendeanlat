@@ -19,7 +19,7 @@ def create_table():
     with con:
 
         cur = con.cursor()
-        cur.execute("CREATE TABLE Tweets(screen_name TEXT, tweet TEXT, urls TEXT, sqltime TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)")
+        cur.execute("CREATE TABLE Tweets(screen_name TEXT, tweet TEXT, hash_tag TEXT, match_term TEXT, time TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL)")
 
 
 def dropAndCreate():
